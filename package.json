@@ -1,0 +1,10 @@
+{
+	"name": "uniunsafeio",
+	"displayName":"UniUnsafeIO",
+	"version": "0.1.3",
+	"unity": "2018.4",
+	"description": "UniUnsafeIO let the programmers use NativeArray.",
+	"dependencies":{
+    },
+    "category":"Library"
+}
