@@ -1,0 +1,10 @@
+Scenes/*
+UnsafeIOManager_Native/.vs/*
+UnsafeIOManager_Native/.vs.meta
+UnsafeIOManager_Native/Debug/*
+UnsafeIOManager_Native/Debug.meta
+UnsafeIOManager_Native/Release/*
+UnsafeIOManager_Native/Release.meta
+UnsafeIOManager_Native/x64/*
+UnsafeIOManager_Native/x64.meta
+Scenes.meta
