@@ -22,6 +22,12 @@ namespace UniUnsafeIO.Unsafe.LowLevel
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateWriteHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint length);
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateReadHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint length);
 
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern bool GetResultReadHandle(IntPtr readManager);
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern bool GetResultWriteHandle(IntPtr writeManager);
+
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint GetErrorReadHandle(IntPtr readManager);
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint GetErrorWriteHandle(IntPtr writeManager);
+
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint WaitForComplete(IntPtr manager, [Out]out uint error, uint timeout);
 
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern void Dispose(IntPtr something);

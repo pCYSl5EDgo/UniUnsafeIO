@@ -73,6 +73,15 @@ extern "C"
 		*error = GetLastError();
 		return answer;
 	}
+	BOOL UNITY_INTERFACE_EXPORT GetResultWriteHandle(WriteHandlePointer manager)
+	{
+		return manager->Result;
+	}
+
+	BOOL UNITY_INTERFACE_EXPORT GetResultReadHandle(ReadHandlePointer manager)
+	{
+		return manager->Result;
+	}
 
 	uint32_t UNITY_INTERFACE_EXPORT GetErrorWriteHandle(WriteHandlePointer manager)
 	{
