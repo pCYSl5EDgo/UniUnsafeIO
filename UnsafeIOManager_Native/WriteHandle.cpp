@@ -5,11 +5,12 @@
 WriteHandle::WriteHandle(HANDLE handle, LPCVOID buffer, DWORD offset, DWORD length)
 	: FileHandle{ handle }
 {
-	if (FileHandle == INVALID_HANDLE_VALUE || handle == nullptr)
+	if (FileHandle == INVALID_HANDLE_VALUE || handle == nullptr || buffer == nullptr)
 	{
 		ErrorCode = -1;
 		return;
 	}
+	overlapped = {};
 	overlapped.Offset = offset;
 	Result = { WriteFileEx(FileHandle, buffer, length, &overlapped, FileIOCompletionRoutine) };
 	ErrorCode = GetLastError();
