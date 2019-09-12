@@ -8,21 +8,17 @@ namespace UniUnsafeIO
     {
         [NativeDisableUnsafePtrRestriction] private IntPtr manager;
         [NativeDisableUnsafePtrRestriction] private FileHandle fileHandle;
+        private readonly int isFileHandleOwner;
 
-        public IOHandle(IntPtr manager)
-        {
-            fileHandle = default;
-            this.manager = manager;
-        }
-
-        public IOHandle(FileHandle fileHandle, IntPtr manager)
+        public IOHandle(FileHandle fileHandle, IntPtr manager, bool isFileHandleOwner)
         {
             this.fileHandle = fileHandle;
             this.manager = manager;
+            this.isFileHandleOwner = isFileHandleOwner ? 1 : 0;
         }
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        public bool IsCompleted => manager == IntPtr.Zero || Wrapper.WaitForComplete(manager, out var error, 0) == 0;
+        public bool IsCompleted => manager == IntPtr.Zero || Wrapper.WaitForComplete(fileHandle.Handle, out var error, 0) == 0;
 
         public void Complete()
         {
@@ -30,7 +26,7 @@ namespace UniUnsafeIO
             {
                 return;
             }
-            Wrapper.WaitForComplete(manager, out _, uint.MaxValue);
+            Wrapper.WaitForComplete(fileHandle.Handle, out _, uint.MaxValue);
         }
 
         public void Dispose()
@@ -38,7 +34,7 @@ namespace UniUnsafeIO
             if (manager == IntPtr.Zero) return;
             Wrapper.Dispose(manager);
             manager = IntPtr.Zero;
-            if (fileHandle == default) return;
+            if (fileHandle == default || isFileHandleOwner == 0) return;
             Wrapper.CloseHandle(fileHandle.Handle);
             fileHandle = default;
         }

@@ -74,6 +74,16 @@ extern "C"
 		return answer;
 	}
 
+	uint32_t UNITY_INTERFACE_EXPORT GetErrorWriteHandle(WriteHandlePointer manager)
+	{
+		return manager->ErrorCode;
+	}
+
+	uint32_t UNITY_INTERFACE_EXPORT GetErrorReadHandle(ReadHandlePointer manager)
+	{
+		return manager->ErrorCode;
+	}
+
 	void UNITY_INTERFACE_EXPORT Dispose(void* manager)
 	{
 		delete manager;
