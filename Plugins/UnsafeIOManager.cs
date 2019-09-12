@@ -17,7 +17,7 @@ namespace UniUnsafeIO
                 error = default;
                 return default;
             }
-            var handle = new FileHandle(path, FileAccess.Write, true);
+            var handle = new FileHandle(path, FileAccess.Write, false);
             var writeHandle = Wrapper.CreateWriteHandle(handle.Handle, new IntPtr(buffer), offset, length);
             var ioHandle = new IOHandle(handle, writeHandle, true);
             result = Wrapper.GetResultWriteHandle(writeHandle);
@@ -29,7 +29,7 @@ namespace UniUnsafeIO
             if (path is null) throw new ArgumentNullException(nameof(path));
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (length == 0) return default;
-            var handle = new FileHandle(path, FileAccess.Write, true);
+            var handle = new FileHandle(path, FileAccess.Write, false);
             var ioHandle = new IOHandle(handle, Wrapper.CreateWriteHandle(handle.Handle, new IntPtr(buffer), offset, length), true);
             return ioHandle;
         }
@@ -38,7 +38,7 @@ namespace UniUnsafeIO
             if (path is null) throw new ArgumentNullException(nameof(path));
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (length == 0) return default;
-            var handle = new FileHandle(path, FileAccess.Read, true);
+            var handle = new FileHandle(path, FileAccess.Read, false);
             var ioHandle = new IOHandle(handle, Wrapper.CreateReadHandle(handle.Handle, new IntPtr(buffer), offset, length), true);
             return ioHandle;
         }

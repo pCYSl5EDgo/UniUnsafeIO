@@ -6,37 +6,37 @@ namespace UniUnsafeIO
 {
     public struct IOHandle : IDisposable
     {
-        [NativeDisableUnsafePtrRestriction] private IntPtr manager;
-        [NativeDisableUnsafePtrRestriction] private FileHandle fileHandle;
+        [NativeDisableUnsafePtrRestriction] public IntPtr Manager;
+        [NativeDisableUnsafePtrRestriction] public FileHandle FileHandle;
         private readonly int isFileHandleOwner;
 
         public IOHandle(FileHandle fileHandle, IntPtr manager, bool isFileHandleOwner)
         {
-            this.fileHandle = fileHandle;
-            this.manager = manager;
+            this.FileHandle = fileHandle;
+            this.Manager = manager;
             this.isFileHandleOwner = isFileHandleOwner ? 1 : 0;
         }
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        public bool IsCompleted => manager == IntPtr.Zero || Wrapper.WaitForComplete(fileHandle.Handle, out var error, 0) == 0;
+        public bool IsCompleted => Manager == IntPtr.Zero || Wrapper.WaitForComplete(FileHandle.Handle, out var error, 0) == 0;
 
         public void Complete()
         {
-            if (manager == IntPtr.Zero)
+            if (Manager == IntPtr.Zero)
             {
                 return;
             }
-            Wrapper.WaitForComplete(fileHandle.Handle, out _, uint.MaxValue);
+            Wrapper.WaitForComplete(FileHandle.Handle, out _, uint.MaxValue);
         }
 
         public void Dispose()
         {
-            if (manager == IntPtr.Zero) return;
-            Wrapper.Dispose(manager);
-            manager = IntPtr.Zero;
-            if (fileHandle == default || isFileHandleOwner == 0) return;
-            Wrapper.CloseHandle(fileHandle.Handle);
-            fileHandle = default;
+            if (Manager == IntPtr.Zero) return;
+            Wrapper.Dispose(Manager);
+            Manager = IntPtr.Zero;
+            if (FileHandle == default || isFileHandleOwner == 0) return;
+            Wrapper.CloseHandle(FileHandle.Handle);
+            FileHandle = default;
         }
 #else
         public bool IsCompleted => throw new InvalidOperationException();

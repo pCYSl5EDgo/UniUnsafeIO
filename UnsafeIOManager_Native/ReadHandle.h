@@ -7,7 +7,7 @@ public:
 	~ReadHandle();
 	DWORD ErrorCode{ };
 	HANDLE FileHandle{ INVALID_HANDLE_VALUE };
-	OVERLAPPED overlapped{ };
+	OVERLAPPED *overlapped;
 	BOOL Result{ };
 private:
 };

@@ -8,3 +8,5 @@ UnsafeIOManager_Native/Release.meta
 UnsafeIOManager_Native/x64/*
 UnsafeIOManager_Native/x64.meta
 Scenes.meta
+IOTests/*
+IOTests.meta
