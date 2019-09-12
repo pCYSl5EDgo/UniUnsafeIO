@@ -13,7 +13,7 @@ namespace UniUnsafeIO
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (length == 0) return default;
             var handle = new FileHandle(path, FileAccess.Write, true);
-            return new IOHandle(handle, Wrapper.CreateWriteHandle(handle.Handle, new IntPtr(buffer), offset, length));
+            return new IOHandle(handle, Wrapper.CreateWriteHandle(handle.Handle, new IntPtr(buffer), offset, length), true);
         }
         public static unsafe IOHandle Read(string path, void* buffer, uint offset, uint length)
         {
@@ -21,7 +21,7 @@ namespace UniUnsafeIO
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (length == 0) return default;
             var handle = new FileHandle(path, FileAccess.Read, true);
-            return new IOHandle(handle, Wrapper.CreateReadHandle(handle.Handle, new IntPtr(buffer), offset, length));
+            return new IOHandle(handle, Wrapper.CreateReadHandle(handle.Handle, new IntPtr(buffer), offset, length), true);
         }
 #else
 #endif
