@@ -4,8 +4,17 @@ This library is an Unity Native Plugin for windows environment.
 You can use NativeArray&lt;T&gt; IO in Unity.
 You don't have to use byte[] any more!
 
+# Requirements
 
-## API
+Unity2018.4, 2019.1~
+
+Supported OS : Windows(x86 and x64)
+
+# LICENSE
+
+Distributed under MIT License.
+
+# API
 
 static class UniUnsafeIO.UnsafeIOManager
 
@@ -17,7 +26,7 @@ struct IOHandle : IDisposable
  - void Complete()
  - void Dispose()
 
-## Sample
+# Example
 
 You can wait the completion of IO.
 
