@@ -1,13 +1,10 @@
 #pragma once
+#include "IOHandle.h"
 
-class WriteHandle
+class WriteHandle : public IOHandle
 {
 public:
-	WriteHandle(HANDLE handle, LPCVOID buffer, DWORD offset, DWORD length);
+	WriteHandle(HANDLE handle, LPCVOID buffer, DWORD offset, DWORD offsetHigh, DWORD length);
 	~WriteHandle();
-	DWORD ErrorCode{ };
-	HANDLE FileHandle{ INVALID_HANDLE_VALUE };
-	OVERLAPPED *overlapped{ };
-	BOOL Result{ };
 private:
 };

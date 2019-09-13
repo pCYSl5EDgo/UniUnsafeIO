@@ -12,21 +12,21 @@ namespace UniUnsafeIO.Unsafe.LowLevel
 
         private const string AsyncWriteManagerNativeDllName = "AsyncWriteManager";
 
-        [DllImport(AsyncWriteManagerNativeDllName, CharSet = CharSet.Unicode, EntryPoint = "GetFileHandle")] public static extern IntPtr GetFileHandle(string path, FileAccess access, int isNoBuffering);
-        [DllImport(AsyncWriteManagerNativeDllName, CharSet = CharSet.Unicode, EntryPoint = "GetFileHandle")] public static extern IntPtr GetFileHandle(IntPtr bStrUtf16Buffer, FileAccess access, int isNoBuffering);
+        [DllImport(AsyncWriteManagerNativeDllName, CharSet = CharSet.Unicode)] public static extern IntPtr GetFileHandle(string path, FileAccess access);
+        [DllImport(AsyncWriteManagerNativeDllName, CharSet = CharSet.Unicode)] public static extern IntPtr GetFileHandle(IntPtr bStrUtf16Buffer, FileAccess access);
 
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern void SetFileLength(IntPtr fileHandle, long length);
 
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern long GetFileLength(IntPtr fileHandle);
 
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateWriteHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint length);
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateReadHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint length);
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateWriteHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint offsetHigh, uint length);
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern IntPtr CreateReadHandle(IntPtr fileHandle, IntPtr buffer, uint offset, uint offsetHigh, uint length);
 
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern bool GetResultReadHandle(IntPtr readManager);
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern bool GetResultWriteHandle(IntPtr writeManager);
+        [DllImport(AsyncWriteManagerNativeDllName)] [return: MarshalAs(UnmanagedType.U1)] public static extern bool IsCompleted(IntPtr manager);
 
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint GetErrorReadHandle(IntPtr readManager);
-        [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint GetErrorWriteHandle(IntPtr writeManager);
+        [DllImport(AsyncWriteManagerNativeDllName)] [return: MarshalAs(UnmanagedType.U1)] public static extern bool GetResult(IntPtr manager);
+
+        [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint GetError(IntPtr manager);
 
         [DllImport(AsyncWriteManagerNativeDllName)] public static extern uint WaitForComplete(IntPtr manager, [Out]out uint error, uint timeout);
 

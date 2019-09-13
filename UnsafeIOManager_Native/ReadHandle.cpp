@@ -1,25 +1,27 @@
 #include "pch.h"
 #include "ReadHandle.h"
-#include "FileIOCompletionRoutine.h"
 
-ReadHandle::ReadHandle(HANDLE fileHandle, LPVOID buffer, DWORD offset, DWORD length)
-	: FileHandle{ fileHandle }, overlapped{ nullptr }
+void WINAPI FileIOCompletionRoutineRead(DWORD dwError, DWORD dwTransferred, LPOVERLAPPED lpo)
 {
+	lpo->hEvent = nullptr;
+}
+
+ReadHandle::ReadHandle(HANDLE fileHandle, LPVOID buffer, DWORD offset, DWORD offsetHigh, DWORD length)
+{
+	FileHandle = fileHandle;
 	if (FileHandle == INVALID_HANDLE_VALUE || FileHandle == nullptr || buffer == nullptr)
 	{
 		ErrorCode = -1;
 		return;
 	}
-	overlapped = new OVERLAPPED;
-	*overlapped = {};
-	overlapped->Offset = offset;
-	Result = { ReadFileEx(FileHandle, buffer, length, overlapped, FileIOCompletionRoutine) };
+	overlapped.Offset = offset;
+	overlapped.OffsetHigh = offsetHigh;
+	overlapped.hEvent = this;
+	Result = { ReadFileEx(FileHandle, buffer, length, &overlapped, FileIOCompletionRoutineRead) };
 	ErrorCode = GetLastError();
 }
 
 ReadHandle::~ReadHandle()
 {
-	if (overlapped != nullptr) {
-		delete overlapped;
-	}
+
 }

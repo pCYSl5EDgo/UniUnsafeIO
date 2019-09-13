@@ -1,5 +1,6 @@
 ﻿using System;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine.UIElements;
 using UniUnsafeIO.Unsafe.LowLevel;
 
 namespace UniUnsafeIO
@@ -26,7 +27,10 @@ namespace UniUnsafeIO
             {
                 return;
             }
-            Wrapper.WaitForComplete(FileHandle.Handle, out _, uint.MaxValue);
+            while (!Wrapper.IsCompleted(Manager))
+            {
+                Wrapper.WaitForComplete(FileHandle.Handle, out _, uint.MaxValue);
+            }
         }
 
         public void Dispose()

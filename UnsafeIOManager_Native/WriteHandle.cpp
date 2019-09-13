@@ -1,27 +1,26 @@
 #include "pch.h"
 #include "WriteHandle.h"
-#include "FileIOCompletionRoutine.h"
 
-WriteHandle::WriteHandle(HANDLE handle, LPCVOID buffer, DWORD offset, DWORD length)
-	: FileHandle{ handle }, overlapped{ nullptr }
+void WINAPI FileIOCompletionRoutineWrite(DWORD dwError, DWORD dwTransferred, LPOVERLAPPED lpo)
 {
-	if (FileHandle == INVALID_HANDLE_VALUE || handle == nullptr || buffer == nullptr)
+	lpo->hEvent = nullptr;
+}
+
+WriteHandle::WriteHandle(HANDLE fileHandle, LPCVOID buffer, DWORD offset, DWORD offsetHigh, DWORD length)
+{
+	FileHandle = fileHandle;
+	if (FileHandle == INVALID_HANDLE_VALUE || fileHandle == nullptr || buffer == nullptr)
 	{
 		ErrorCode = -1;
 		return;
 	}
-	overlapped = new OVERLAPPED;
-	*overlapped = {};
-	
-	overlapped->Offset = 0xffffffff;
-	overlapped->OffsetHigh = 0xffffffff;
-	Result = { WriteFileEx(handle, buffer, length, overlapped, FileIOCompletionRoutine) };
+	overlapped.Offset = offset;
+	overlapped.OffsetHigh = offsetHigh;
+	overlapped.hEvent = this;
+	Result = { WriteFileEx(fileHandle, buffer, length, &overlapped, FileIOCompletionRoutineWrite) };
 	ErrorCode = GetLastError();
 }
 
 WriteHandle::~WriteHandle()
 {
-	if (overlapped != nullptr) {
-		delete overlapped;
-	}
 }

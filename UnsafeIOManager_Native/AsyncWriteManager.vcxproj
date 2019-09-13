@@ -165,14 +165,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="FileIOCompletionRoutine.h" />
+    <ClInclude Include="IOHandle.h" />
     <ClInclude Include="ReadHandle.h" />
     <ClInclude Include="WriteHandle.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileIOCompletionRoutine.cpp" />
     <ClCompile Include="ReadHandle.cpp" />
     <ClCompile Include="WriteHandle.cpp" />
     <ClCompile Include="dllmain.cpp" />

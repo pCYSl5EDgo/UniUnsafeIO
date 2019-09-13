@@ -3,6 +3,7 @@
 #include "WriteHandle.h"
 #include "ReadHandle.h"
 
+using IOHandlePointer = IOHandle*;
 using WriteHandlePointer = WriteHandle*;
 using ReadHandlePointer = ReadHandle*;
 
@@ -39,7 +40,7 @@ extern "C"
 		return 0;
 	}
 
-	HANDLE UNITY_INTERFACE_EXPORT  GetFileHandle(LPCWSTR str, DWORD access, int32_t isNoBuffering)
+	HANDLE UNITY_INTERFACE_EXPORT  GetFileHandle(LPCWSTR str, DWORD access)
 	{
 		DWORD fileAccess{};
 		switch (access)
@@ -54,41 +55,37 @@ extern "C"
 			fileAccess = GENERIC_READ | GENERIC_WRITE;
 			break;
 		}
-		return CreateFile(str, access, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED | (isNoBuffering ? FILE_FLAG_NO_BUFFERING : 0), nullptr);
+		return CreateFile(str, access, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_ALWAYS, FILE_FLAG_OVERLAPPED, nullptr);
 	}
 
-	ReadHandlePointer UNITY_INTERFACE_EXPORT CreateReadHandle(HANDLE fileHandle, LPVOID buffer, DWORD offset, DWORD length)
+	ReadHandlePointer UNITY_INTERFACE_EXPORT CreateReadHandle(HANDLE fileHandle, LPVOID buffer, DWORD offset, DWORD offsetHigh, DWORD length)
 	{
-		return new ReadHandle{ fileHandle, buffer, offset, length };
+		return new ReadHandle{ fileHandle, buffer, offset, offsetHigh, length };
 	}
 
-	WriteHandlePointer UNITY_INTERFACE_EXPORT CreateWriteHandle(HANDLE fileHandle, LPCVOID buffer, DWORD offset, DWORD length)
+	WriteHandlePointer UNITY_INTERFACE_EXPORT CreateWriteHandle(HANDLE fileHandle, LPCVOID buffer, DWORD offset, DWORD offsetHigh, DWORD length)
 	{
-		return new WriteHandle{ fileHandle, buffer, offset, length };
+		return new WriteHandle{ fileHandle, buffer, offset, offsetHigh, length };
 	}
 
-	uint32_t UNITY_INTERFACE_EXPORT WaitForComplete(HANDLE handle, DWORD* error, DWORD timeout)
+	uint32_t UNITY_INTERFACE_EXPORT WaitForComplete(HANDLE fileHandle, DWORD* error, DWORD timeout)
 	{
-		const auto answer{ WaitForSingleObjectEx(handle, timeout, TRUE) };
+		const auto answer{ WaitForSingleObjectEx(fileHandle, timeout, TRUE) };
 		*error = GetLastError();
 		return answer;
 	}
-	BOOL UNITY_INTERFACE_EXPORT GetResultWriteHandle(WriteHandlePointer manager)
+
+	bool UNITY_INTERFACE_EXPORT IsCompleted(IOHandlePointer manager)
+	{
+		return manager->overlapped.hEvent == nullptr;
+	}
+
+	bool UNITY_INTERFACE_EXPORT GetResult(IOHandlePointer manager)
 	{
 		return manager->Result;
 	}
 
-	BOOL UNITY_INTERFACE_EXPORT GetResultReadHandle(ReadHandlePointer manager)
-	{
-		return manager->Result;
-	}
-
-	uint32_t UNITY_INTERFACE_EXPORT GetErrorWriteHandle(WriteHandlePointer manager)
-	{
-		return manager->ErrorCode;
-	}
-
-	uint32_t UNITY_INTERFACE_EXPORT GetErrorReadHandle(ReadHandlePointer manager)
+	uint32_t UNITY_INTERFACE_EXPORT GetError(IOHandlePointer manager)
 	{
 		return manager->ErrorCode;
 	}

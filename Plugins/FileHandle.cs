@@ -18,16 +18,17 @@ namespace UniUnsafeIO.Unsafe.LowLevel
 
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return Handle.GetHashCode();
         }
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         [NativeDisableUnsafePtrRestriction] public IntPtr Handle;
 #endif
 
-        public FileHandle(string path, FileAccess access, bool isNoBuffering)
+        public FileHandle(string path, FileAccess access)
         {
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            Handle = Wrapper.GetFileHandle(path, access, isNoBuffering ? 1 : 0);
+            Handle = Wrapper.GetFileHandle(path, access);
 #endif
         }
 
