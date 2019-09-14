@@ -16,15 +16,63 @@ Distributed under MIT License.
 
 # API
 
-static class UniUnsafeIO.UnsafeIOManager
+## static class UniUnsafeIO.UnsafeIOManager
 
- - IOHandle Write(string path, byte* buffer, long length, long offset, bool isSettingEnd = true)
+### IOHandle Write(string path, void* buffer, ulong offset, ulong length)
 
-struct IOHandle : IDisposable
+This method issues async write order.
 
- - bool IsCompleted { get; }
- - void Complete()
- - void Dispose()
+- string path
+    - Ooutput destination file path
+    - If path is null, ArgumentNullException will be thrown.
+- byte* buffer
+    - Source pointer. This buffer's contnet should not be changed while writing to the file.
+    - If buffer is null, ArgumentNullException will be thrown.
+- ulong offset
+    - The byte offset at which to start writing to the file.
+- ulong length
+    - The byte length to write. 
+    - If length is 0, default(IOHandle) will be returned.
+
+*Remarks*
+This api lengthens the file size when the length argument is larger than the original size but never shortens.
+If you want exact length. You should assign the length to FileHandle.Length property.
+
+---
+
+## struct FileHandle : IDisposable
+
+### FileHandle(string path, System.IO.FileAccess access)
+
+Create File handle with path.
+
+### FileHandle(IntPtr fileHandle)
+
+Create from IntPtr representing Win32 native FileHandle.
+
+### long Legnth { get; set; }
+
+You can get/set the current byte length of the file.
+
+---
+
+## struct IOHandle : IDisposable
+
+### FileHandle FileHandle
+
+You can get/set the file size via this field.
+
+### bool IsCompleted { get; }
+
+Check for the completion.
+
+### void Complete()
+
+Wait for the completion.
+
+### void Dispose()
+
+You should call Dispose() after writing completion to free the native resources.
 
 # Example
 
@@ -35,7 +83,7 @@ NativeArray<byte> bytesWrite;
 
 // Some codes;
 
-using(IOHandle handle = UniUnsafeIO.UnsafeIOManager.Write(@"a.txt", bytesWrite.GetUnsafePtr(), offset: 0, length: bytesWrite.Length))
+using(IOHandle handle = UniUnsafeIO.UnsafeIOManager.Write(@"a.txt", bytesWrite.GetUnsafePtr(), offset: 0, length: (ulong)bytesWrite.Length))
 {    
     // Some work;
     handle.Complete(); // Wait for Completion;
@@ -49,7 +97,7 @@ NativeArray<byte> bytesWrite;
 
 // Some codes;
 
-using(IOHandle handle = UniUnsafeIO.UnsafeIOManager.Write(@"a.txt", (byte*)bytesWrite.GetUnsafePtr(), offset: 0, length: bytesWrite.Length))
+using(IOHandle handle = UniUnsafeIO.UnsafeIOManager.Write(@"a.txt", bytesWrite.GetUnsafePtr(), offset: 0, length: bytesWrite.Length))
 {
     while(true)
     {
